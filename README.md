@@ -20,7 +20,8 @@ publication/
   Jessee_et_al_2022.md       Paper in markdown format
   figures/                   Figures from the publication
 analysis.ipynb               Reproduction and extension of the SAR analysis
-analysis_updates.ipynb       Additional analyses beyond the original paper
+analysis_updates.ipynb       NLS reanalysis using the sars library
+comparative_analysis.md      Methodological comparison: NLS vs. original log-linear fitting
 ```
 
 ## Data
@@ -36,6 +37,8 @@ The core dataset (`data/herpetofauna.csv`) contains species counts for four nest
 
 ## Analysis
 
+### Original SAR Analysis
+
 The main notebook (`analysis.ipynb`) reproduces and extends the paper's SAR analysis:
 
 1. **Log-log regression** of species richness on area for total herpetofauna, amphibians, and reptiles
@@ -44,9 +47,24 @@ The main notebook (`analysis.ipynb`) reproduces and extends the paper's SAR anal
 
 The amphibian model predicted 42.7 species for Great Smoky Mountains NP compared to 43 reported, demonstrating strong predictive accuracy.
 
+### Updated Analysis with `sars`
+
+The updated notebook (`analysis_updates.ipynb`) reanalyzes the data using the [`sars`](https://pypi.org/project/sars/) Python library, which fits SAR models via nonlinear least squares (NLS) in arithmetic space rather than the log-linear OLS used in the original calculations. The NLS approach is generally preferred in modern SAR literature because it does not impose the variance structure assumed by log-transformation (Tjørve & Tjørve 2021). The notebook covers:
+
+1. **Power-law fits** for all three taxonomic groups with NLS parameter estimates
+2. **Reptile power vs. linear comparison** — the linear model (R² = 0.998) dramatically outperforms the power model (R² = 0.66) for reptiles
+3. **Residual diagnostics** revealing the systematic misfit of the power model to the reptile data
+4. **Multi-model comparison** across all 20 SAR models supported by `sars`
+5. **Threshold analysis** testing for breakpoints / small-island effects
+6. **Predictive validation** comparing NLS predictions against independent test sites from the original publication
+
+The full methodological discussion — parameter shifts between fitting methods, the AICc limitation at n = 4, curve shape analysis, and ecological interpretation — is in [`comparative_analysis.md`](comparative_analysis.md).
+
 ## Setup
 
 ```bash
 pip install -r requirements.txt
 jupyter notebook analysis.ipynb
 ```
+
+The updated analysis requires the [`sars`](https://pypi.org/project/sars/) library (included in `requirements.txt`).
