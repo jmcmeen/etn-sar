@@ -1,2 +1,2 @@
-sars
-jupyter
+sars==0.7.3
+jupyter==1.1.1
