@@ -1,6 +1,6 @@
-# Comparative Analysis: NLS vs. Log-Linear SAR Fitting
+# Eastern Tennessee Herpetofauna: Updated Comparative Analysis Using NLS vs. Log-Linear SAR Fitting
 
-A companion to [`analysis_updates.ipynb`](analysis_updates.ipynb), comparing the nonlinear least squares (NLS) results from the [`sars`](https://pypi.org/project/sars/) Python library against the original log-linear OLS calculations published in Jessee, Stout & McMeen (2022).
+A companion to [`analysis_updates.ipynb`](https://github.com/jmcmeen/etn-sar/blob/main/analysis_updates.ipynb), comparing the nonlinear least squares (NLS) results from the [`sars`](https://pypi.org/project/sars/) Python library against the original log-linear OLS calculations published in Jessee, Stout & McMeen (2022).
 
 ---
 
@@ -20,14 +20,14 @@ This minimizes squared residuals in the original species-count scale and assumes
 
 ## Parameter Estimates
 
-| Group | Method | c | z | R² |
-|---|---|---|---|---|
+| Group              | Method                | c     | z      | R²          |
+| ------------------ | --------------------- | ----- | ------ | ----------- |
 | Total Herpetofauna | Original (log-linear) | 29.54 | 0.1137 | 0.86 (adj.) |
-| Total Herpetofauna | `sars` NLS | 22.49 | 0.1478 | 0.9162 |
-| Amphibians | Original (log-linear) | 14.09 | 0.1449 | 0.98 (adj.) |
-| Amphibians | `sars` NLS | 12.28 | 0.1616 | 0.9849 |
-| Reptiles | Original (log-linear) | 15.45 | 0.0747 | 0.33 (adj.) |
-| Reptiles | `sars` NLS | 10.96 | 0.1205 | 0.6619 |
+| Total Herpetofauna | `sars` NLS            | 22.49 | 0.1478 | 0.9162      |
+| Amphibians         | Original (log-linear) | 14.09 | 0.1449 | 0.98 (adj.) |
+| Amphibians         | `sars` NLS            | 12.28 | 0.1616 | 0.9849      |
+| Reptiles           | Original (log-linear) | 15.45 | 0.0747 | 0.33 (adj.) |
+| Reptiles           | `sars` NLS            | 10.96 | 0.1205 | 0.6619      |
 
 > **R² values are not directly comparable between rows.** The original R² is adjusted R² computed in log-space (measuring fit of log S vs. log A), while the `sars` R² is unadjusted and computed in arithmetic space (measuring fit of S vs. A). Both metrics are retained here to match their respective source methods, but side-by-side numerical comparison is not meaningful.
 
@@ -39,11 +39,11 @@ The original R² values are adjusted R² in log-space, while the `sars` values a
 
 All three NLS z-values fall within the canonical mainland/nested range of 0.10–0.20 (Rosenzweig 1995, Drakare et al. 2006), consistent with the study's nested sampling design (Steele Creek Park ⊂ Sullivan County ⊂ NE Tennessee ⊂ Eastern Tennessee).
 
-| Group | z (Original) | z (NLS) | Range Context |
-|---|---|---|---|
-| Total Herpetofauna | 0.1137 | 0.1478 | Mainland/nested (0.10–0.20) |
-| Amphibians | 0.1449 | 0.1616 | Mainland/nested |
-| Reptiles | 0.0747 | 0.1205 | Below range (original); within range (NLS) |
+| Group              | z (Original) | z (NLS) | Range Context                              |
+| ------------------ | ------------ | ------- | ------------------------------------------ |
+| Total Herpetofauna | 0.1137       | 0.1478  | Mainland/nested (0.10–0.20)                |
+| Amphibians         | 0.1449       | 0.1616  | Mainland/nested                            |
+| Reptiles           | 0.0747       | 0.1205  | Below range (original); within range (NLS) |
 
 The original reptile z of 0.0747 fell below the expected mainland range, suggesting almost no area effect. Under NLS the estimate shifts to 0.12, placing it within the expected range — though the poor overall fit (R² = 0.66) means neither estimate is reliable.
 
@@ -51,21 +51,21 @@ The original reptile z of 0.0747 fell below the expected mainland range, suggest
 
 The most analytically significant finding is the reptile SAR's departure from the power model. Examining the raw data reveals why:
 
-| Site | Area (km²) | Reptile Species |
-|---|---|---|
-| Steele Creek Park | 9.3 | 21 |
-| Sullivan County | 1,114 | 21 |
-| NE Tennessee | 4,137 | 24 |
-| Eastern Tennessee | 37,438 | 44 |
+| Site              | Area (km²) | Reptile Species |
+| ----------------- | ---------- | --------------- |
+| Steele Creek Park | 9.3        | 21              |
+| Sullivan County   | 1,114      | 21              |
+| NE Tennessee      | 4,137      | 24              |
+| Eastern Tennessee | 37,438     | 44              |
 
 Reptile richness is flat from 9.3 km² to 1,114 km² (21 species at both scales), increases modestly to 24 at 4,137 km², then jumps to 44 at 37,438 km². This step-function pattern is fundamentally non-power-law. The residuals confirm the systematic misfit:
 
-| Site | Power Residual | Linear Residual |
-|---|---|---|
-| Steele Creek Park | +6.66 | +0.09 |
-| Sullivan County | −4.52 | −0.59 |
-| NE Tennessee | −5.89 | +0.54 |
-| Eastern Tennessee | +5.02 | −0.04 |
+| Site              | Power Residual | Linear Residual |
+| ----------------- | -------------- | --------------- |
+| Steele Creek Park | +6.66          | +0.09           |
+| Sullivan County   | −4.52          | −0.59           |
+| NE Tennessee      | −5.89          | +0.54           |
+| Eastern Tennessee | +5.02          | −0.04           |
 
 The linear model (S = 20.90 + 0.000618·A) produces dramatically smaller residuals and achieves R² = 0.998 vs. 0.662 for the power model. The multi-model comparison confirms this: the linear model ranks first among 2-parameter models for reptiles by both AIC and BIC.
 
@@ -103,12 +103,12 @@ For reptiles, although fitted models are technically classified as convex, the b
 
 Testing both fitting methods against independent sites from the original publication:
 
-| Site | Area (km²) | Amp. Reported | Amp. NLS | Amp. Original | Rep. Reported | Rep. NLS | Rep. Original |
-|---|---|---|---|---|---|---|---|
-| GSMNP | 2,114 | 43 | 42.3 | 42.7 | 38 | 27.6 | 27.4 |
-| Cumberland Gap NHP | 82.74 | 28 | 25.1 | 26.7 | 20 | 18.7 | 21.5 |
-| Radford AAP | 32.7 | 19 | 21.6 | 23.3 | 14 | 16.7 | 20.1 |
-| Henderson Wetland | 0.101 | 12 | 8.5 | 10.1 | —* | 8.3 | 13.0 |
+| Site               | Area (km²) | Amp. Reported | Amp. NLS | Amp. Original | Rep. Reported | Rep. NLS | Rep. Original |
+| ------------------ | ---------- | ------------- | -------- | ------------- | ------------- | -------- | ------------- |
+| GSMNP              | 2,114      | 43            | 42.3     | 42.7          | 38            | 27.6     | 27.4          |
+| Cumberland Gap NHP | 82.74      | 28            | 25.1     | 26.7          | 20            | 18.7     | 21.5          |
+| Radford AAP        | 32.7       | 19            | 21.6     | 23.3          | 14            | 16.7     | 20.1          |
+| Henderson Wetland  | 0.101      | 12            | 8.5      | 10.1          | —*            | 8.3      | 13.0          |
 
 \* Henderson Wetland reptile count is unavailable because the site was not surveyed for reptiles in the original study. Reptile predictions are shown for completeness but cannot be validated.
 
