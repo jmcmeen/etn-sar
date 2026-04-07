@@ -6,7 +6,7 @@ Artifacts and updated analyses from:
 
 ## About the Paper
 
-Steele Creek Park is a 9.259-km² municipal park in Sullivan County, northeastern Tennessee. Surrounded by developed areas, the park's steep, forested, shale knobs form an ecological "island in the city" well suited to biogeographical research.
+Steele Creek Park is a 9.3-km² municipal park in Sullivan County, northeastern Tennessee. Surrounded by developed areas, the park's steep, forested, shale knobs form an ecological "island in the city" well suited to biogeographical research.
 
 The study compiled a herpetofaunal inventory for the park (10 frogs, 11 salamanders, 2 lizards, 11 snakes, 7 turtles) and established species-area relationships (SARs) for amphibians and reptiles across four nested sampling areas ranging from Steele Creek Park to all of eastern Tennessee. The amphibian model (Adj. R² = 0.98) proved highly predictive; the reptile model (Adj. R² = 0.33) was weaker, suggesting factors beyond area drive reptile diversity in the region.
 
