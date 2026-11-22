@@ -54,8 +54,8 @@ The updated notebook (`analysis_updates.ipynb`) reanalyzes the data using the [`
 1. **Power-law fits** for all three taxonomic groups with NLS parameter estimates
 2. **Reptile power vs. linear comparison** — the linear model (R² = 0.998) dramatically outperforms the power model (R² = 0.66) for reptiles
 3. **Residual diagnostics** revealing the systematic misfit of the power model to the reptile data
-4. **Multi-model comparison** across all 20 SAR models supported by `sars`
-5. **Threshold analysis** testing for breakpoints / small-island effects
+4. **Multi-model comparison** across all 20 SAR models supported by `sars`, ranked by AIC (AICc is undefined at n = 4), with the caveat that three-parameter models fit four points almost perfectly whatever their shape
+5. **Threshold analysis**, which `sars` refuses at n = 4: AICc is undefined even for the straight line, so a small-island effect can't be tested
 6. **Predictive validation** comparing NLS predictions against independent test sites from the original publication
 
 The full methodological discussion — parameter shifts between fitting methods, the AICc limitation at n = 4, curve shape analysis, and ecological interpretation — is in [`comparative_analysis.md`](comparative_analysis.md).

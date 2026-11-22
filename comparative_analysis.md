@@ -67,7 +67,7 @@ Reptile richness is flat from 9.3 km² to 1,114 km² (21 species at both scales)
 | NE Tennessee      | −5.89          | +0.54           |
 | Eastern Tennessee | +5.02          | −0.04           |
 
-The linear model (S = 20.90 + 0.000618·A) produces dramatically smaller residuals and achieves R² = 0.998 vs. 0.662 for the power model. The multi-model comparison confirms this: the linear model ranks first among 2-parameter models for reptiles by both AIC and BIC.
+The linear model (S = 20.90 + 0.000618·A) produces dramatically smaller residuals and achieves R² = 0.998 vs. 0.662 for the power model. The multi-model comparison confirms this: the linear model has the lowest AIC of all 20 models for reptiles.
 
 This suggests that reptile richness in this region may be driven by a threshold effect at the largest spatial scale rather than by smooth area-dependent scaling — potentially reflecting the geographic range boundaries of southern Appalachian reptile species, which may require the full eastern Tennessee extent to capture meaningful turnover.
 
@@ -79,25 +79,27 @@ With n = 4 observations and k ≥ 3 estimated parameters (the `sars` library cou
 
 > AICc = AIC + 2k(k+1) / (n − k − 1)
 
-When n ≤ k + 1, the denominator is ≤ 0, producing AICc = ∞. This means Akaike weights are all zero and model averaging via `sars.sar_average()` cannot produce meaningful results.
+When n ≤ k + 1 the correction is undefined (`sars` reports AICc as ∞), so AICc can neither rank the models nor weight them.
 
-This is not a limitation of the library but a fundamental constraint of the sample size. AIC and BIC remain finite and are used here for cautious ranking.
+This is not a limitation of the library but a fundamental constraint of the sample size. AIC and BIC remain finite, and the notebook ranks the models by AIC: at n = 4 it penalises each extra parameter more than BIC does (2 against ln 4 ≈ 1.39), the safer choice when extra parameters fit four points so easily. `sars` can also weight and average models by AIC or BIC (`sar_average(ic="AIC")`), but on four points the notebook doesn't: a three-parameter model leaves one residual degree of freedom, so any weights would rest on fits that can't be told apart, and suggest a precision the data don't have.
 
-The same constraint affects `sars.bootstrap_ci()`, which generates confidence bands by resampling rows with replacement and computing model-averaged predictions across bootstrap replicates. Because the underlying model averaging relies on Akaike weights, the bootstrap intervals are not meaningful when those weights are uniformly zero. With n ≥ 6–7, both tools become available and would substantially strengthen uncertainty quantification.
+The same holds for `sars.bootstrap_ci()`, which resamples the four rows with replacement and averages the models fitted to each resample. Nine in ten resamples repeat a point, leaving three distinct areas or fewer; a three-parameter model then passes through every distinct point exactly, with no residual variance, so its information criterion, and the weights built on it, are meaningless (and by default the bootstrap weights by AICc, which is undefined here anyway). A fifth data point would make AICc finite for the two-parameter models; several more would be needed before model averaging and bootstrap intervals mean much.
 
-### Rankings by BIC
+### Rankings by AIC
 
-**Herpetofauna** — The top models are 3-parameter models (epm2, powerR, epm1) with R² > 0.99, but these have only 1 residual degree of freedom. The 2-parameter power model (R² = 0.92) is more trustworthy at this sample size.
+A three-parameter model leaves one residual degree of freedom on four points, so it fits almost perfectly whatever its shape: three-parameter models with R² > 0.99 crowd the top of the rankings, and their order says nothing about which curve is right. The comparison among the two-parameter models, with two residual degrees of freedom, is the more meaningful one, and even it can't reliably tell the forms apart.
 
-**Amphibians** — Similar ranking with epm2 > powerR > epm1, but the standard power model already provides an excellent fit (R² = 0.98) that is only marginally improved by adding a third parameter.
+**Herpetofauna** — The top models by AIC are three-parameter (epm1, powerR, epm2; AIC 19.6–27.0). Among the two-parameter models, the linear and power models are effectively tied (AIC 33.58 and 33.66, R² 0.918 and 0.916), well ahead of koba and loga (AIC 37.3).
 
-**Reptiles** — The linear model ranks first or near-first among 2-parameter models (BIC = 8.25), outperforming the power model (BIC = 29.27) by a wide margin. The top 3-parameter models (asymp, ratio, powerR) achieve R² > 0.998 but with effectively linear behavior — the asymptotic model converges to d = 78.5 with z = 1.38 × 10⁻⁵, producing a curve indistinguishable from a straight line.
+**Amphibians** — The same three-parameter models lead (epm1 > powerR > epm2), and the power model is the best two-parameter model by a wide margin (AIC 23.49, R² = 0.985; next koba, 30.84): it already fits so well that a third parameter adds little.
+
+**Reptiles** — The linear model has the lowest AIC of all 20 models (10.09), far ahead of the power model (31.11). Three three-parameter models follow within 0.3 (gompertz, asymp and ratio; AIC 10.18–10.35, R² ≈ 0.999), and they lead by BIC, but only because BIC's per-parameter penalty is the smaller one at n = 4. Over these four points they stay close to the straight line, although `sars` classifies their shape as convex: the asymptotic model, for one, converges to d = 78.5 with z = 1.4 × 10⁻⁵, an asymptote far above the data approached at a tiny rate.
 
 ### Curve Shape
 
 For herpetofauna and amphibians, all well-fitting models produce **convex** shapes (upward curvature without asymptote), consistent with the original finding and with typical nested SAR data (Tjørve & Tjørve 2021).
 
-For reptiles, although fitted models are technically classified as convex, the best-fitting asymptotic models have approach rates so low that they are functionally linear across the observed range. The data do not support distinguishing between convex, asymptotic, and linear forms for this group.
+For reptiles, the linear model ranks first, and the three-parameter models just behind it are classified as convex but have approach rates so low that they stay close to a straight line across the observed range. The data do not support distinguishing between convex, asymptotic, and linear forms for this group.
 
 ## Predictive Validation
 
@@ -120,16 +122,14 @@ At small areas (Henderson Wetland, 0.101 km²), the methods diverge more noticea
 
 ## Threshold Analysis
 
-`sars.sar_threshold()` tests for breakpoints (small-island effect) by comparing continuous two-slope, left-horizontal + right slope, and simple linear models. For all three taxonomic groups, the analysis selects the simple linear model with no breakpoint detected.
-
-This is expected at n = 4 — insufficient data to support a piecewise structure — but documents the absence of statistical support for a small-island effect at this sample size.
+`sars.sar_threshold()` tests for breakpoints (a small-island effect) by comparing piecewise models with a single straight line, by AICc. With four points AICc is undefined even for the straight line (two coefficients plus σ need n > 4), so `sars` refuses the analysis: a breakpoint can't be tested at this sample size, and the data neither support nor rule out a small-island effect. Earlier versions of `sars` returned the straight-line baseline alone, since no piecewise model could be fitted to four points; that was never a choice among models.
 
 ## Limitations
 
 All conclusions in this analysis are based on n = 4 data points, which is extremely small for any regression methodology. With only 4 observations:
 
 - **Degrees of freedom are minimal.** Two-parameter models have only 2 residual degrees of freedom; 3-parameter models have just 1. Any model with 3+ parameters can fit the data nearly perfectly regardless of its ecological plausibility.
-- **AICc is undefined** for all models (see "The AICc Limitation" above), precluding standard model averaging and Akaike weight comparisons.
+- **AICc is undefined** for all models (see "The AICc Limitation" above), so models are ranked by AIC, not averaged, and no threshold model can be tested.
 - **Statistical power is negligible.** Confidence intervals on parameters are wide, and distinguishing between competing model forms (power vs. logarithmic vs. linear) is not statistically meaningful at this sample size.
 - **The NLS vs. OLS comparison is illustrative, not definitive.** Both methods fit the amphibian data well and the reptile data poorly. The parameter shifts between methods, while consistent with theoretical expectations, should not be over-interpreted given the sample size.
 
@@ -137,7 +137,7 @@ These limitations apply equally to the original publication's log-linear analysi
 
 ## Recommendations for Further Work
 
-**Expand the dataset.** The single most impactful improvement would be adding intermediate spatial scales (individual watersheds, additional well-surveyed parks, or state-level data). Even 2–3 additional data points would make AICc finite for 2-parameter models and unlock model averaging and bootstrap confidence intervals.
+**Expand the dataset.** The single most impactful improvement would be adding intermediate spatial scales (individual watersheds, additional well-surveyed parks, or state-level data). A single additional data point would make AICc finite for the two-parameter models; several would make model averaging, bootstrap confidence intervals and a test for a small-island effect worthwhile.
 
 **Taxonomic decomposition.** Disaggregating reptiles into lizards, snakes, and turtles could reveal whether the weak SAR is driven by a specific subgroup — particularly turtles, whose richness may be more habitat-specific (aquatic habitat availability) than area-dependent.
 
@@ -151,11 +151,11 @@ These limitations apply equally to the original publication's log-linear analysi
 
 2. The qualitative conclusions of the original publication are fully supported: amphibians show a strong power-law SAR (R² ≈ 0.98), total herpetofauna are moderately well-fit (R² ≈ 0.92), and reptiles are poorly fit by the power model (R² ≈ 0.66).
 
-3. Multi-model comparison reveals that reptile richness in this region is better described by a linear relationship than by any curvilinear SAR model, driven by the identical species count at 9.3 km² and 1,114 km² (both 21 species).
+3. Multi-model comparison suggests that reptile richness in this region follows a straight line rather than a curvilinear SAR: the linear model has the lowest AIC of all 20 models, and the three-parameter models just behind it stay close to a straight line over these points. This is driven by the identical species count at 9.3 km² and 1,114 km² (both 21 species).
 
-4. AICc-based model selection, model averaging, and bootstrap confidence intervals are fundamentally inapplicable at n = 4. BIC and AIC remain usable for cautious ranking.
+4. AICc-based model selection, model averaging, bootstrap confidence intervals and threshold analysis are fundamentally inapplicable at n = 4. AIC ranks the models cautiously, and only the comparison among two-parameter models carries much information.
 
-5. All z-values fall within the expected mainland/nested range (0.10–0.20), consistent with the study's spatial design.
+5. All NLS z-values fall within the expected mainland/nested range (0.10–0.20), consistent with the study's spatial design; the original reptile z (0.0747) falls below it.
 
 6. Predictive accuracy at independent test sites is similar between the two methods for amphibians. Both methods fail for reptiles, confirming the original conclusion that reptile richness in eastern Tennessee is not reliably predicted by a simple area-based model.
 
