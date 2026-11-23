@@ -1,5 +1,7 @@
 # Species-Area Relationships of Amphibians and Reptiles in Eastern Tennessee
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24454360.svg)](https://doi.org/10.5281/zenodo.24454360)
+
 Artifacts and updated analyses from:
 
 > **Jessee, L.D., Stout, J.B., & McMeen, J.N. (2022).** Herpetofauna of Steele Creek Park (Sullivan County, TN), with Comments on Species-Area Relationships of Amphibians and Reptiles in Eastern Tennessee. *Southeastern Naturalist*, 21(1), 63-73.
@@ -68,3 +70,13 @@ jupyter notebook analysis.ipynb
 ```
 
 The updated analysis requires the [`sars`](https://pypi.org/project/sars/) library (included in `requirements.txt`).
+
+## How to cite
+
+Please cite the original paper, and this archive if you use its data or analyses:
+
+> Jessee, L.D., Stout, J.B., & McMeen, J.N. (2022). Herpetofauna of Steele Creek Park (Sullivan County, TN), with Comments on Species-Area Relationships of Amphibians and Reptiles in Eastern Tennessee. *Southeastern Naturalist*, 21(1), 63–73. https://doi.org/10.1656/058.021.0110
+
+> Jessee, L.D., Stout, J.B., & McMeen, J.N. (2026). etn-sar: data and reanalysis for Jessee, Stout & McMeen (2022). Zenodo. https://doi.org/10.5281/zenodo.24454360
+
+The DOI above always resolves to the latest version; each release also has its own DOI on Zenodo. GitHub's "Cite this repository" button gives the same in other formats.
