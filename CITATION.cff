@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use these data or this reanalysis, please cite the original paper (below) and this archive."
+title: "etn-sar: data and reanalysis for Jessee, Stout & McMeen (2022), species-area relationships of amphibians and reptiles in Eastern Tennessee"
+type: software
+authors:
+  - family-names: Jessee
+    given-names: Lance D.
+  - family-names: Stout
+    given-names: Jeremy B.
+  - family-names: McMeen
+    given-names: John N.
+    orcid: "https://orcid.org/0009-0003-8141-567X"
+abstract: >-
+  Data and analyses from Jessee, Stout & McMeen (2022): the herpetofaunal
+  inventory of Steele Creek Park and species-area relationships for
+  amphibians and reptiles across four nested areas in Eastern Tennessee,
+  reproduced with the original log-linear regression and refit by nonlinear
+  least squares with the sars Python package.
+version: 1.0.0
+license: MIT
+repository-code: "https://github.com/jmcmeen/etn-sar"
+keywords:
+  - species-area relationship
+  - herpetofauna
+  - amphibians
+  - reptiles
+  - Tennessee
+references:
+  - type: article
+    title: "Herpetofauna of Steele Creek Park (Sullivan County, TN), with Comments on Species-Area Relationships of Amphibians and Reptiles in Eastern Tennessee"
+    authors:
+      - family-names: Jessee
+        given-names: Lance D.
+      - family-names: Stout
+        given-names: Jeremy B.
+      - family-names: McMeen
+        given-names: John N.
+    journal: Southeastern Naturalist
+    volume: 21
+    issue: 1
+    start: 63
+    end: 73
+    year: 2022
+    doi: 10.1656/058.021.0110
