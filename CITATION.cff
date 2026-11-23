@@ -17,6 +17,7 @@ abstract: >-
   reproduced with the original log-linear regression and refit by nonlinear
   least squares with the sars Python package.
 version: 1.0.0
+doi: 10.5281/zenodo.24454360
 license: MIT
 repository-code: "https://github.com/jmcmeen/etn-sar"
 keywords:
