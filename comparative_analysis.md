@@ -58,7 +58,7 @@ The most analytically significant finding is the reptile SAR's departure from th
 | NE Tennessee      | 4,137      | 24              |
 | Eastern Tennessee | 37,438     | 44              |
 
-Reptile richness is flat from 9.3 km² to 1,114 km² (21 species at both scales), increases modestly to 24 at 4,137 km², then jumps to 44 at 37,438 km². This step-function pattern is fundamentally non-power-law. The residuals confirm the systematic misfit:
+Reptile richness is flat from 9.3 km² to 1,114 km² (21 species at both scales), increases modestly to 24 at 4,137 km², then jumps to 44 at 37,438 km². A power law cannot follow this pattern, flat across the first two scales and steepest at the largest. The residuals confirm the systematic misfit:
 
 | Site              | Power Residual | Linear Residual |
 | ----------------- | -------------- | --------------- |
@@ -69,7 +69,7 @@ Reptile richness is flat from 9.3 km² to 1,114 km² (21 species at both scales)
 
 The linear model (S = 20.90 + 0.000618·A) produces dramatically smaller residuals and achieves R² = 0.998 vs. 0.662 for the power model. The multi-model comparison confirms this: the linear model has the lowest AIC of all 20 models for reptiles.
 
-This suggests that reptile richness in this region may be driven by a threshold effect at the largest spatial scale rather than by smooth area-dependent scaling — potentially reflecting the geographic range boundaries of southern Appalachian reptile species, which may require the full eastern Tennessee extent to capture meaningful turnover.
+This suggests that reptile richness in this region may rise in proportion to area, with most of the gain at the largest spatial scale, rather than as a power of it (four points cannot tell that from a threshold; see "Threshold Analysis") — potentially reflecting the geographic range boundaries of southern Appalachian reptile species, which may require the full eastern Tennessee extent to capture meaningful turnover.
 
 ## Multi-Model Rankings
 
@@ -81,7 +81,7 @@ With n = 4 observations and k ≥ 3 estimated parameters (the `sars` library cou
 
 When n ≤ k + 1 the correction is undefined (`sars` reports AICc as ∞), so AICc can neither rank the models nor weight them.
 
-This is not a limitation of the library but a fundamental constraint of the sample size. AIC and BIC remain finite, and the notebook ranks the models by AIC: at n = 4 it penalises each extra parameter more than BIC does (2 against ln 4 ≈ 1.39), the safer choice when extra parameters fit four points so easily. `sars` can also weight and average models by AIC or BIC (`sar_average(ic="AIC")`), but on four points the notebook doesn't: a three-parameter model leaves one residual degree of freedom, so any weights would rest on fits that can't be told apart, and suggest a precision the data don't have.
+This is not a limitation of the library but a fundamental constraint of the sample size. AIC and BIC remain finite, and the notebook ranks the models by AIC: at n = 4 it penalizes each extra parameter more than BIC does (2 against ln 4 ≈ 1.39), the safer choice when extra parameters fit four points so easily. `sars` can also weight and average models by AIC or BIC (`sar_average(ic="AIC")`), but on four points the notebook doesn't: a three-parameter model leaves one residual degree of freedom, so any weights would rest on fits that can't be told apart, and suggest a precision the data don't have.
 
 The same holds for `sars.bootstrap_ci()`, which resamples the four rows with replacement and averages the models fitted to each resample. Nine in ten resamples repeat a point, leaving three distinct areas or fewer; a three-parameter model then passes through every distinct point exactly, with no residual variance, so its information criterion, and the weights built on it, are meaningless (and by default the bootstrap weights by AICc, which is undefined here anyway). A fifth data point would make AICc finite for the two-parameter models; several more would be needed before model averaging and bootstrap intervals mean much.
 
@@ -93,11 +93,11 @@ A three-parameter model leaves one residual degree of freedom on four points, so
 
 **Amphibians** — The same three-parameter models lead (epm1 > powerR > epm2), and the power model is the best two-parameter model by a wide margin (AIC 23.49, R² = 0.985; next koba, 30.84): it already fits so well that a third parameter adds little.
 
-**Reptiles** — The linear model has the lowest AIC of all 20 models (10.09), far ahead of the power model (31.11). Three three-parameter models follow within 0.3 (gompertz, asymp and ratio; AIC 10.18–10.35, R² ≈ 0.999), and they lead by BIC, but only because BIC's per-parameter penalty is the smaller one at n = 4. Over these four points they stay close to the straight line, although `sars` classifies their shape as convex: the asymptotic model, for one, converges to d = 78.5 with z = 1.4 × 10⁻⁵, an asymptote far above the data approached at a tiny rate.
+**Reptiles** — The linear model has the lowest AIC of all 20 models (10.09), far ahead of the power model (31.11). Three three-parameter models follow within 0.3 (gompertz, asymp and ratio; AIC 10.18–10.35, R² ≈ 0.999), and they lead by BIC, but only because BIC's per-parameter penalty is the smaller one at n = 4. Over these four points they stay close to the straight line, although `sars` classifies their shape as convex: the asymptotic model, for one, converges to an asymptote of d = 78.5 at a rate of z = 1.4 × 10⁻⁵ (that model's own z, not the power model's exponent), an asymptote far above the data approached at a tiny rate.
 
 ### Curve Shape
 
-For herpetofauna and amphibians, all well-fitting models produce **convex** shapes (upward curvature without asymptote), consistent with the original finding and with typical nested SAR data (Tjørve & Tjørve 2021).
+For herpetofauna and amphibians, every well-fitting model that `sars` assigns a shape is **convex** (it assigns none to epm2 and p2 for herpetofauna, or to p2 for amphibians) (upward curvature without asymptote), consistent with the original finding and with typical nested SAR data (Tjørve & Tjørve 2021).
 
 For reptiles, the linear model ranks first, and the three-parameter models just behind it are classified as convex but have approach rates so low that they stay close to a straight line across the observed range. The data do not support distinguishing between convex, asymptotic, and linear forms for this group.
 
@@ -108,13 +108,15 @@ Testing both fitting methods against independent sites from the original publica
 | Site               | Area (km²) | Amp. Reported | Amp. NLS | Amp. Original | Rep. Reported | Rep. NLS | Rep. Original |
 | ------------------ | ---------- | ------------- | -------- | ------------- | ------------- | -------- | ------------- |
 | GSMNP              | 2,114      | 43            | 42.3     | 42.7          | 38            | 27.6     | 27.4          |
-| Cumberland Gap NHP | 82.74      | 28            | 25.1     | 26.7          | 20            | 18.7     | 21.5          |
+| Cumberland Gap NHP | 82.74      | 28            | 25.1     | 26.7          | 20            | 18.7     | 21.5†         |
 | Radford AAP        | 32.7       | 19            | 21.6     | 23.3          | 14            | 16.7     | 20.1          |
 | Henderson Wetland  | 0.101      | 12            | 8.5      | 10.1          | —*            | 8.3      | 13.0          |
 
-\* Henderson Wetland reptile count is unavailable because the site was not surveyed for reptiles in the original study. Reptile predictions are shown for completeness but cannot be validated.
+\* Henderson Wetland has no reptile count: reptiles were not reported at that site (Jessee et al. 2022). Reptile predictions are shown for completeness but cannot be validated.
 
-For amphibians, both methods produce similar predictions. The NLS model gives slightly lower estimates that happen to be closer to reported values at GSMNP (42.3 vs. 43) and Radford AAP, but slightly farther from Cumberland Gap.
+† Recomputed from the published coefficients (21.49); the paper prints 21.4.
+
+For amphibians, both methods produce similar predictions. The NLS model gives slightly lower estimates, which are closer to the reported value at Radford AAP (21.6 vs. 23.3, reported 19) but farther from it at GSMNP (42.3 vs. 42.7, reported 43), Cumberland Gap and Henderson Wetland.
 
 For reptiles, both methods substantially underpredict GSMNP (reported 38 vs. predicted ~27–28), confirming the weak predictive power of the reptile SAR regardless of fitting method. This underprediction was noted in the original publication and attributed to the non-significant regression relationship.
 
@@ -130,7 +132,7 @@ All conclusions in this analysis are based on n = 4 data points, which is extrem
 
 - **Degrees of freedom are minimal.** Two-parameter models have only 2 residual degrees of freedom; 3-parameter models have just 1. Any model with 3+ parameters can fit the data nearly perfectly regardless of its ecological plausibility.
 - **AICc is undefined** for all models (see "The AICc Limitation" above), so models are ranked by AIC, not averaged, and no threshold model can be tested.
-- **Statistical power is negligible.** Confidence intervals on parameters are wide, and distinguishing between competing model forms (power vs. logarithmic vs. linear) is not statistically meaningful at this sample size.
+- **Statistical power is negligible.** Parameters estimated from four points are imprecise, and distinguishing between competing model forms (power vs. logarithmic vs. linear) is not statistically meaningful at this sample size.
 - **The NLS vs. OLS comparison is illustrative, not definitive.** Both methods fit the amphibian data well and the reptile data poorly. The parameter shifts between methods, while consistent with theoretical expectations, should not be over-interpreted given the sample size.
 
 These limitations apply equally to the original publication's log-linear analysis and to the NLS reanalysis presented here. The results are best viewed as a baseline that motivates expanded sampling at intermediate spatial scales.
@@ -157,7 +159,7 @@ These limitations apply equally to the original publication's log-linear analysi
 
 5. All NLS z-values fall within the expected mainland/nested range (0.10–0.20), consistent with the study's spatial design; the original reptile z (0.0747) falls below it.
 
-6. Predictive accuracy at independent test sites is similar between the two methods for amphibians. Both methods fail for reptiles, confirming the original conclusion that reptile richness in eastern Tennessee is not reliably predicted by a simple area-based model.
+6. Predictive accuracy at independent test sites is similar between the two methods for amphibians. Both methods underpredict reptiles at GSMNP by about 10 species and overpredict them at Radford AAP, confirming the original conclusion that reptile richness in eastern Tennessee is not reliably predicted by a simple area-based model.
 
 ## References
 
